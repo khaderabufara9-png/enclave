@@ -1,0 +1,4 @@
+{$ENCLAVE_DOMAIN:localhost} {
+  encode gzip
+  reverse_proxy backend:8080
+}

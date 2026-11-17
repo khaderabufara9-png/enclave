@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: enclave
+      POSTGRES_PASSWORD: enclave_secret
+      POSTGRES_DB: enclave
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  coturn:
+    image: coturn/coturn:4.6-alpine
+    network_mode: host
+    volumes:
+      - ./coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgres://enclave:enclave_secret@postgres:5432/enclave
+      REDIS_URL: redis://redis:6379
+      STUN_URL: stun:stun.l.google.com:19302
+      TURN_URL: turn:localhost:3478
+      TURN_SHARED_SECRET: replace_with_strong_coturn_static_auth_secret
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  pgdata:

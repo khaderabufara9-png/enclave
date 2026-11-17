@@ -1,0 +1,6 @@
+{
+  "name": "Enclave",
+  "description": "Anonymous-by-design end-to-end encrypted private messenger with per-contact identities, isolated Spaces, ephemeral messaging, and WebRTC calls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

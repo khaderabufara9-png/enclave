@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-enclave}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_pg_password}
+      POSTGRES_DB: ${POSTGRES_DB:-enclave}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  coturn:
+    image: coturn/coturn:4.6-alpine
+    restart: unless-stopped
+    network_mode: host
+    command:
+      - "-n"
+      - "--log-file=stdout"
+      - "--listening-port=3478"
+      - "--min-port=49152"
+      - "--max-port=65535"
+      - "--fingerprint"
+      - "--lt-cred-mech"
+      - "--use-auth-secret"
+      - "--static-auth-secret=${TURN_SHARED_SECRET}"
+      - "--realm=${ENCLAVE_DOMAIN:-enclave.private}"
+      - "--external-ip=${PUBLIC_SERVER_IP}"
+      - "--no-multicast-peers"
+      - "--no-loopback-peers"
+
+  backend:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: 8080
+      HOST: 0.0.0.0
+      DATABASE_URL: postgres://${POSTGRES_USER:-enclave}:${POSTGRES_PASSWORD:-change_me_pg_password}@postgres:5432/${POSTGRES_DB:-enclave}
+      REDIS_URL: redis://redis:6379
+      PUBLIC_BASE_URL: https://${ENCLAVE_DOMAIN}
+      STUN_URL: stun:stun.l.google.com:19302
+      TURN_URL: turn:${ENCLAVE_DOMAIN}:3478
+      TURN_SHARED_SECRET: ${TURN_SHARED_SECRET}
+      FCM_SERVICE_ACCOUNT_JSON_PATH: ${FCM_SERVICE_ACCOUNT_JSON_PATH:-}
+      ENVELOPE_TTL_HOURS: ${ENVELOPE_TTL_HOURS:-168}
+    volumes:
+      - ./secrets:/app/secrets:ro
+    depends_on:
+      - postgres
+      - redis
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      ENCLAVE_DOMAIN: ${ENCLAVE_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

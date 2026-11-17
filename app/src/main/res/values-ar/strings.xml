@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Enclave</string>
+    <string name="tagline">الخصوصية بالتصميم. مجهول الهوية افتراضياً.</string>
+    <string name="nav_conversations">المحادثات</string>
+    <string name="nav_contacts">جهات الاتصال</string>
+    <string name="nav_calls">المكالمات</string>
+    <string name="nav_spaces">المساحات</string>
+    <string name="nav_settings">الإعدادات</string>
+    <string name="onboarding_welcome_title">ملاذك الخاص</string>
+    <string name="onboarding_welcome_subtitle">بدون رقم هاتف. بدون بريد إلكتروني. بدون مزامنة جهات الاتصال. محادثات ومكالمات مشفرة بالكامل تحت سيطرتك وحدك.</string>
+    <string name="onboarding_get_started">إنشاء هوية مجهولة</string>
+    <string name="onboarding_restore">استعادة نسخة مشفرة</string>
+    <string name="lock_title">التطبيق مقفل</string>
+    <string name="lock_subtitle">أدخل رمز PIN أو استخدم البصمة لفك تشفير مساحة العمل.</string>
+    <string name="ephemeral_warning">تُحذف الرسائل المؤقتة محلياً على كلا الجهازين، ولكن لا يمكنها منع لقطات الشاشة أو التسجيل الخارجي.</string>
+    <string name="secret_space_warning">لا تظهر المساحات السرية في قائمة المساحات. إذا نسيت عبارة المرور السرية فلن يمكن استعادة البيانات.</string>
+</resources>
